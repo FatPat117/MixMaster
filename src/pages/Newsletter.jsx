@@ -1,11 +1,13 @@
 import axios from "axios";
 import React from "react";
-import { Form, redirect, useActionData } from "react-router-dom";
+import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { toast } from "react-toastify";
 const newsletterUrl = "https://www.course-api.com/cocktails-newsletter";
 
 export default function Newsletter() {
         const data = useActionData();
+        const navigation = useNavigation();
+        const isSubmitting = navigation.state === "submitting";
         return (
                 <Form method="post" className="form">
                         <h4 style={{ textAlign: "center", marginBottom: "2rem" }}>our newsletter</h4>
@@ -14,14 +16,7 @@ export default function Newsletter() {
                                 <label htmlFor="name" className="form-label">
                                         name
                                 </label>
-                                <input
-                                        type="text"
-                                        id="name"
-                                        name="name"
-                                        className="form-input"
-                                        defaultValue="Pitachiti"
-                                        required
-                                />
+                                <input type="text" id="name" name="name" className="form-input" required />
                         </div>
 
                         {/* Last Name */}
@@ -29,14 +24,7 @@ export default function Newsletter() {
                                 <label htmlFor="lastName" className="form-label">
                                         last name
                                 </label>
-                                <input
-                                        type="text"
-                                        id="lastName"
-                                        name="lastName"
-                                        className="form-input"
-                                        defaultValue="chiti"
-                                        required
-                                />
+                                <input type="text" id="lastName" name="lastName" className="form-input" required />
                         </div>
                         {/* Email */}
                         <div className="form-row">
@@ -53,8 +41,13 @@ export default function Newsletter() {
                                 />
                         </div>
                         {/* Button */}
-                        <button type="submit" className="btn btn-block" style={{ marginTop: "0.5rem" }}>
-                                Submit
+                        <button
+                                type="submit"
+                                className="btn btn-block"
+                                style={{ marginTop: "0.5rem" }}
+                                disabled={isSubmitting}
+                        >
+                                {isSubmitting ? "Submitting..." : "Submit"}
                         </button>
                 </Form>
         );
