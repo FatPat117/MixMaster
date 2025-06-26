@@ -43,7 +43,14 @@ export default function Newsletter() {
                                 <label htmlFor="email" className="form-label">
                                         email
                                 </label>
-                                <input type="email" id="email" name="email" className="form-input" required />
+                                <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        className="form-input"
+                                        required
+                                        defaultValue={"test@test.com"}
+                                />
                         </div>
                         {/* Button */}
                         <button type="submit" className="btn btn-block" style={{ marginTop: "0.5rem" }}>
@@ -56,7 +63,12 @@ export default function Newsletter() {
 export const action = async ({ request }) => {
         const formData = await request.formData();
         const data = Object.fromEntries(formData);
-        const response = await axios.post(newsletterUrl, data);
-        toast.success(response.data.msg);
-        return redirect("/");
+        try {
+                const response = await axios.post(newsletterUrl, data);
+                toast.success(response.data.msg);
+                return redirect("/");
+        } catch (error) {
+                toast.error(error?.response?.data?.msg || "Something went wrong");
+                return null;
+        }
 };
