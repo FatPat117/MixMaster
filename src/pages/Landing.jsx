@@ -5,8 +5,26 @@ import CocktailList from "../components/CocktailList";
 import SearchForm from "../components/SearchForm";
 const cocktailSearchUrl = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=`;
 
+const searchCocktailsQuery = (searchTerm) => {
+        return {
+                queryKey: ["search", searchTerm || "all"],
+                queryFn: async () => {
+                        searchTerm = searchTerm || "a";
+                        const response = await axios.get(`${cocktailSearchUrl}${searchTerm}`);
+                        return response.data.drinks;
+                },
+        };
+};
+
+export const loader = async ({ request }) => {
+        const url = new URL(request.url);
+        const searchTerm = url.searchParams.get("search") || "a";
+        return { searchTerm };
+};
+
 export default function Landing() {
-        const { drinks, searchTerm } = useLoaderData();
+        const { searchTerm } = useLoaderData();
+        const { data: drinks } = useQuery(searchCocktailsQuery(searchTerm));
         return (
                 <>
                         <SearchForm searchTerm={searchTerm} />
@@ -14,15 +32,3 @@ export default function Landing() {
                 </>
         );
 }
-
-export const loader = async ({ request }) => {
-        const url = new URL(request.url);
-        const searchTerm = url.searchParams.get("search") || "a";
-        try {
-                const response = await axios.get(`${cocktailSearchUrl}${searchTerm}`);
-                return { drinks: response.data.drinks, searchTerm };
-        } catch (error) {
-                toast.error("No cocktails found");
-                return { drinks: [], searchTerm };
-        }
-};
