@@ -1,4 +1,5 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { About, Cocktail, Error, HomeLayout, Landing, Newsletter, SinglePageError } from "./pages";
 import { loader as cocktailLoader } from "./pages/Cocktail";
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
                                 path: "/cocktail/:id",
                                 element: <Cocktail />,
                                 errorElement: <SinglePageError />,
-                                loader: cocktailLoader,
+                                loader: cocktailLoader(queryClient),
                         },
                         {
                                 path: "/newsletter",
