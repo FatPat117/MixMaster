@@ -1,8 +1,18 @@
+import { QueryClient } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { About, Cocktail, Error, HomeLayout, Landing, Newsletter, SinglePageError } from "./pages";
 import { loader as cocktailLoader } from "./pages/Cocktail";
 import { loader as landingLoader } from "./pages/Landing";
 import { action as newsletterAction } from "./pages/Newsletter";
+
+const queryClient = new QueryClient({
+        defaultOptions: {
+                queries: {
+                        staleTime: 1000 * 60 * 5,
+                },
+        },
+});
+
 const router = createBrowserRouter([
         {
                 path: "/",
@@ -41,6 +51,11 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-        return <RouterProvider router={router} />;
+        return (
+                <QueryClientProvider client={queryClient}>
+                        <RouterProvider router={router} />
+                        <ReactQueryDevtools initialIsOpen={false} />
+                </QueryClientProvider>
+        );
 };
 export default App;
